@@ -1,6 +1,9 @@
 const express = require('express')
 const app = express()
 app.use(express.json())
+const cors = require('cors')
+app.use(cors())
+app.use(express.static('static_build'))
 const logger = require('morgan')
 logger.token('body', req=> JSON.stringify(req.body))
 app.use(logger(':method :url :status :res[content-length] - :response-time ms :body'))
@@ -114,7 +117,7 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
