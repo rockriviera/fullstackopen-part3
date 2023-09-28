@@ -52,22 +52,21 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  Person.findById(request.params.id).then(note=>{
-    response.json(note)
+  Person.findById(request.params.id).then(person=>{
+    response.json(person)
   })
 
 })
 
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
-  persons = persons.filter(person => person.id !== id)
-
+  Person.deleteOne(id);
   response.status(204).end()
 })
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
-  if (!body.name||!body.number) {
+/*   if (!body.name||!body.number) {
     return response.status(400).json({ 
       error: 'person name and/or number not fully provided' 
     })
@@ -77,17 +76,17 @@ app.post('/api/persons', (request, response) => {
     return response.status(400).json({ 
       error: 'person name must be unique' 
     })
-  }
+  } */
 
-  const person = {
-    id:generateId(),
+  const person = new Person({
+    //id:generateId(),
     name:body.name,
     number:body.number
-  }
-  persons=persons.concat(person)
-  response.json(person)
+  })
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
-
 const existingName =(name)=>{
   return persons.find(person=> person.name==name)
   }

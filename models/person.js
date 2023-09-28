@@ -2,13 +2,9 @@ const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
 
-//const password = 'mongulardb'
-
 const url = process.env.MONGODB_URI
-
 console.log('connecting to', url)
 
-//const url =`mongodb+srv://fullstack:${password}@fullstackopen.apeul52.mongodb.net/phonebook?retryWrites=true&w=majority`
 
 mongoose.connect(url)
   .then(result => {
@@ -20,7 +16,7 @@ mongoose.connect(url)
 
 const personSchema = new mongoose.Schema({
     name: String,
-    phoneNumber: String,
+    number: String,
 })
 
 personSchema.set('toJSON', {
