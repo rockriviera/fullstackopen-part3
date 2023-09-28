@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 app.use(express.json())
@@ -7,6 +8,7 @@ app.use(express.static('static_build'))
 const logger = require('morgan')
 logger.token('body', req=> JSON.stringify(req.body))
 app.use(logger(':method :url :status :res[content-length] - :response-time ms :body'))
+const Person = require('./models/person')
 
 let persons = [
     { 
@@ -36,7 +38,12 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person
+    .find({})
+    .then(persons=>
+      {
+        response.json(persons)
+      })
 })
 
 app.get('/info', (request, response) => {
@@ -45,14 +52,9 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person =>person.id === id)
-  if(person){
-    response.json(person)
-  }
-  else{
-    response.status(404).end()
-  }
+  Person.findById(request.params.id).then(note=>{
+    response.json(note)
+  })
 
 })
 
@@ -117,7 +119,7 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
